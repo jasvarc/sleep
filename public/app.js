@@ -250,7 +250,10 @@ function renderChart(mountId, chartData, columnWidth, plotHeight) {
   const rx = Math.min(4, barWidth / 2);
   const labelEvery = Math.max(1, Math.ceil(nights.length / 14));
 
-  nights.forEach((night, i) => {
+  // najnovsi datum vlavo, najstarsi vpravo
+  const displayNights = [...nights].reverse();
+
+  displayNights.forEach((night, i) => {
     const x = margin.left + i * columnWidth + gap / 2;
 
     // neviditelny hit-rect pre hover cez cely stlpec

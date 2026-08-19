@@ -166,12 +166,41 @@ function responsiveSizes() {
   return { week: 88, month: 30, quarter: 9, marginLeft: 46, plotHeight: 340 };
 }
 
-function renderChart(mountId, chartData, columnWidth, marginLeft, plotHeight) {
+// Os y sa vykresli do samostatneho, nescrollovatelneho SVG naľavo od
+// scrollovatelnej plochy s dátami - pri horizontálnom scrolli grafu tak
+// popisky hodín ostávajú na mieste a scrolluju sa len samotné hodnoty.
+function renderAxis(axisMountId, chartData, axisWidth, plotHeight) {
+  const mount = document.getElementById(axisMountId);
+  mount.innerHTML = '';
+
+  const { yMin, yMax } = chartData;
+  const top = 10;
+  const bottom = 26;
+  const height = top + plotHeight + bottom;
+  const range = yMax - yMin;
+  const yScale = (v) => top + ((v - yMin) / range) * plotHeight;
+
+  const svg = el('svg', { width: axisWidth, height, viewBox: `0 0 ${axisWidth} ${height}` });
+  const step = gridStep(range);
+  for (let v = Math.ceil(yMin / step) * step; v <= yMax; v += step) {
+    const label = el('text', {
+      class: 'axis-label',
+      x: axisWidth - 8,
+      y: yScale(v) + 3,
+      'text-anchor': 'end',
+    });
+    label.textContent = clockLabel(v);
+    svg.appendChild(label);
+  }
+  mount.appendChild(svg);
+}
+
+function renderChart(mountId, chartData, columnWidth, plotHeight) {
   const mount = document.getElementById(mountId);
   mount.innerHTML = '';
 
   const { nights, yMin, yMax } = chartData;
-  const margin = { top: 10, right: 16, bottom: 26, left: marginLeft };
+  const margin = { top: 10, right: 16, bottom: 26, left: 6 };
   const plotWidth = columnWidth * nights.length;
   const width = margin.left + plotWidth + margin.right;
   const height = margin.top + plotHeight + margin.bottom;
@@ -181,7 +210,7 @@ function renderChart(mountId, chartData, columnWidth, marginLeft, plotHeight) {
 
   const svg = el('svg', { width, height, viewBox: `0 0 ${width} ${height}` });
 
-  // gridlines + osove popisky (hodiny)
+  // gridlines (popisky hodin su v samostatnom nescrollovatelnom paneli - renderAxis)
   const step = gridStep(range);
   const gridGroup = el('g');
   for (let v = Math.ceil(yMin / step) * step; v <= yMax; v += step) {
@@ -189,9 +218,6 @@ function renderChart(mountId, chartData, columnWidth, marginLeft, plotHeight) {
     gridGroup.appendChild(
       el('line', { class: 'gridline', x1: margin.left, x2: margin.left + plotWidth, y1: y, y2: y })
     );
-    const label = el('text', { class: 'axis-label', x: margin.left - 8, y: y + 3, 'text-anchor': 'end' });
-    label.textContent = clockLabel(v);
-    gridGroup.appendChild(label);
   }
   svg.appendChild(gridGroup);
   svg.appendChild(
@@ -336,9 +362,10 @@ document.querySelectorAll('.table-toggle').forEach((btn) => {
 
 function renderCharts(data) {
   const sizes = responsiveSizes();
-  renderChart('chart-week', data.week, sizes.week, sizes.marginLeft, sizes.plotHeight);
-  renderChart('chart-month', data.month, sizes.month, sizes.marginLeft, sizes.plotHeight);
-  renderChart('chart-quarter', data.quarter, sizes.quarter, sizes.marginLeft, sizes.plotHeight);
+  for (const key of ['week', 'month', 'quarter']) {
+    renderAxis(`axis-${key}`, data[key], sizes.marginLeft, sizes.plotHeight);
+    renderChart(`chart-${key}`, data[key], sizes[key], sizes.plotHeight);
+  }
 }
 
 let loadedData = null;

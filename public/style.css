@@ -84,10 +84,25 @@ body {
   flex-wrap: wrap;
 }
 
+.chart-plot {
+  display: flex;
+  align-items: flex-start;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.chart-axis {
+  flex: 0 0 auto;
+}
+
+.chart-axis svg {
+  display: block;
+}
+
 .chart-scroll {
   overflow-x: auto;
   overflow-y: hidden;
-  flex: 1 1 320px;
+  flex: 1 1 auto;
   min-width: 0;
 }
 

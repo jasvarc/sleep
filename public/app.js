@@ -156,13 +156,22 @@ function hideTooltip() {
   tooltip.hidden = true;
 }
 
-function renderChart(mountId, chartData, columnWidth) {
+// Sirka stlpca (a teda hrubka ciary) a vyska grafu podla sirky obrazovky -
+// na mobile uzsie ciary, aby sa graf zmestil na displej s minimom
+// horizontalneho scrollovania.
+function responsiveSizes() {
+  const w = window.innerWidth;
+  if (w <= 480) return { week: 34, month: 11, quarter: 4, marginLeft: 34, plotHeight: 240 };
+  if (w <= 768) return { week: 52, month: 17, quarter: 6, marginLeft: 40, plotHeight: 280 };
+  return { week: 88, month: 30, quarter: 9, marginLeft: 46, plotHeight: 340 };
+}
+
+function renderChart(mountId, chartData, columnWidth, marginLeft, plotHeight) {
   const mount = document.getElementById(mountId);
   mount.innerHTML = '';
 
   const { nights, yMin, yMax } = chartData;
-  const margin = { top: 10, right: 16, bottom: 26, left: 46 };
-  const plotHeight = 340;
+  const margin = { top: 10, right: 16, bottom: 26, left: marginLeft };
   const plotWidth = columnWidth * nights.length;
   const width = margin.left + plotWidth + margin.right;
   const height = margin.top + plotHeight + margin.bottom;
@@ -325,6 +334,30 @@ document.querySelectorAll('.table-toggle').forEach((btn) => {
   });
 });
 
+function renderCharts(data) {
+  const sizes = responsiveSizes();
+  renderChart('chart-week', data.week, sizes.week, sizes.marginLeft, sizes.plotHeight);
+  renderChart('chart-month', data.month, sizes.month, sizes.marginLeft, sizes.plotHeight);
+  renderChart('chart-quarter', data.quarter, sizes.quarter, sizes.marginLeft, sizes.plotHeight);
+}
+
+let loadedData = null;
+
+function debounce(fn, wait) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+window.addEventListener(
+  'resize',
+  debounce(() => {
+    if (loadedData) renderCharts(loadedData);
+  }, 200)
+);
+
 async function init() {
   const subtitle = document.getElementById('subtitle');
   const errorBox = document.getElementById('error');
@@ -337,9 +370,8 @@ async function init() {
 
     subtitle.textContent = `Dáta z kalendára „Sleep as Android“ · posledná zaznamenaná noc: ${data.latestNight}`;
 
-    renderChart('chart-week', data.week, 88);
-    renderChart('chart-month', data.month, 30);
-    renderChart('chart-quarter', data.quarter, 9);
+    loadedData = data;
+    renderCharts(data);
 
     renderTable('table-week', data.week.nights);
     renderTable('table-month', data.month.nights);

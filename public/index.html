@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spánok — Sleep as Android</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <h1>Spánok</h1>
+      <p class="subtitle" id="subtitle">Načítavam dáta z kalendára „Sleep as Android“…</p>
+    </header>
+
+    <div id="error" class="error-box" hidden></div>
+
+    <section class="chart-card" id="card-week">
+      <h2>Posledných 7 dní</h2>
+      <div class="chart-scroll"><div class="chart-mount" id="chart-week"></div></div>
+      <div class="chart-footer">
+        <div class="legend">
+          <span class="legend-item"><span class="swatch swatch-real"></span>Zaznamenaný spánok</span>
+          <span class="legend-item"><span class="swatch swatch-estimated"></span>Odhad (chýbajúce dáta)</span>
+        </div>
+        <button class="table-toggle" data-target="table-week">Zobraziť ako tabuľku</button>
+      </div>
+      <div class="table-wrap" id="table-week" hidden></div>
+    </section>
+
+    <section class="chart-card" id="card-month">
+      <h2>Posledných 28 dní</h2>
+      <div class="chart-scroll"><div class="chart-mount" id="chart-month"></div></div>
+      <div class="chart-footer">
+        <div class="legend">
+          <span class="legend-item"><span class="swatch swatch-real"></span>Zaznamenaný spánok</span>
+          <span class="legend-item"><span class="swatch swatch-estimated"></span>Odhad (chýbajúce dáta)</span>
+        </div>
+        <button class="table-toggle" data-target="table-month">Zobraziť ako tabuľku</button>
+      </div>
+      <div class="table-wrap" id="table-month" hidden></div>
+    </section>
+
+    <section class="chart-card" id="card-quarter">
+      <h2>Posledné 3 mesiace</h2>
+      <div class="chart-scroll"><div class="chart-mount" id="chart-quarter"></div></div>
+      <div class="chart-footer">
+        <div class="legend">
+          <span class="legend-item"><span class="swatch swatch-real"></span>Zaznamenaný spánok</span>
+          <span class="legend-item"><span class="swatch swatch-estimated"></span>Odhad (chýbajúce dáta)</span>
+        </div>
+        <button class="table-toggle" data-target="table-quarter">Zobraziť ako tabuľku</button>
+      </div>
+      <div class="table-wrap" id="table-quarter" hidden></div>
+    </section>
+  </main>
+
+  <div id="tooltip" class="tooltip" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

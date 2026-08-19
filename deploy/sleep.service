@@ -1,0 +1,18 @@
+[Unit]
+Description=Appka "sleep" - grafy spanku zo Sleep as Android
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=__APP_DIR__
+ExecStart=/usr/bin/node server/index.js
+EnvironmentFile=__APP_DIR__/.env
+Environment=PORT=3002
+Environment=HOST=127.0.0.1
+Restart=on-failure
+RestartSec=3
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

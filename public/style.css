@@ -1,0 +1,244 @@
+:root {
+  color-scheme: light;
+  --page-plane:     #f9f9f7;
+  --surface-1:      #fcfcfb;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --gridline:       #e1e0d9;
+  --baseline:       #c3c2b7;
+  --border:         rgba(11, 11, 11, 0.10);
+  --series-1:       #2a78d6;
+  --series-1-soft:  #2a78d6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page-plane:     #0d0d0d;
+    --surface-1:      #1a1a19;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255, 255, 255, 0.10);
+    --series-1:       #3987e5;
+    --series-1-soft:  #3987e5;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page-plane);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  font-size: 14px;
+}
+
+.error-box {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.chart-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.chart-card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+
+.chart-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.chart-mount svg {
+  display: block;
+}
+
+.chart-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.swatch-real {
+  background: var(--series-1);
+  opacity: 0.85;
+}
+
+.swatch-estimated {
+  background: var(--series-1);
+  opacity: 0.32;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.35) 0,
+    rgba(0, 0, 0, 0.35) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+.table-toggle {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.table-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--baseline);
+}
+
+.table-wrap {
+  margin-top: 14px;
+  overflow-x: auto;
+}
+
+table.data-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+
+table.data-table th,
+table.data-table td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--gridline);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+table.data-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+table.data-table td.estimated-tag {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.axis-label {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+.axis-date-label {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.gridline {
+  stroke: var(--gridline);
+  stroke-width: 1;
+}
+
+.baseline {
+  stroke: var(--baseline);
+  stroke-width: 1;
+}
+
+.sleep-block {
+  fill: var(--series-1);
+}
+
+.sleep-block.real {
+  opacity: 0.85;
+}
+
+.sleep-block.estimated-fill {
+  opacity: 0.28;
+}
+
+.estimated-hatch {
+  stroke: var(--series-1);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  max-width: 220px;
+}
+
+.tooltip .tt-date {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.tooltip .tt-est {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 12px;
+  margin-top: 2px;
+}

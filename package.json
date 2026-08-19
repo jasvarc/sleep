@@ -1,0 +1,20 @@
+{
+  "name": "sleep",
+  "version": "1.0.0",
+  "description": "Grafy spánku zo Sleep as Android (Google Kalendár)",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

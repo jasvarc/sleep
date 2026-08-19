@@ -246,7 +246,7 @@ async function init() {
   const subtitle = document.getElementById('subtitle');
   const errorBox = document.getElementById('error');
   try {
-    const res = await fetch('/api/sleep-data');
+    const res = await fetch('api/sleep-data');
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.error || `HTTP ${res.status}`);

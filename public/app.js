@@ -40,6 +40,89 @@ function gridStep(range) {
   return 4;
 }
 
+function isWeekend(d) {
+  const wd = new Date(Date.UTC(d.year, d.month - 1, d.day)).getUTCDay();
+  return wd === 0 || wd === 6;
+}
+
+// Hlavny (najdlhsi) usek spanku danej noci - kratke denne slofiky sa tym
+// vylucia z priemerov v bocnom paneli.
+function mainSegment(night) {
+  if (!night.segments.length) return null;
+  return night.segments.reduce((best, s) => (s.end - s.start > best.end - best.start ? s : best));
+}
+
+// Priemerne zaspavanie / vstavanie / dlzka spanku, osobitne pre pracovne dni
+// a vikend. Pocita sa len z realnych (nie dopocitanych) noci a len z hlavneho
+// useku spanku danej noci.
+function computeStats(nights) {
+  const groups = {
+    workday: { bedSum: 0, wakeSum: 0, durSum: 0, count: 0 },
+    weekend: { bedSum: 0, wakeSum: 0, durSum: 0, count: 0 },
+  };
+  for (const night of nights) {
+    if (night.estimated || night.noData) continue;
+    const seg = mainSegment(night);
+    if (!seg) continue;
+    const g = isWeekend(night.date) ? groups.weekend : groups.workday;
+    g.bedSum += seg.start;
+    g.wakeSum += seg.end;
+    g.durSum += seg.end - seg.start;
+    g.count += 1;
+  }
+  const finish = (g) =>
+    g.count === 0
+      ? null
+      : {
+          bed: clockLabel(g.bedSum / g.count),
+          wake: clockLabel(g.wakeSum / g.count),
+          duration: durationLabel(g.durSum / g.count),
+          count: g.count,
+        };
+  return { workday: finish(groups.workday), weekend: finish(groups.weekend) };
+}
+
+function renderStats(targetId, nights) {
+  const panel = document.getElementById(targetId);
+  panel.innerHTML = '';
+  const stats = computeStats(nights);
+
+  if (!stats.workday && !stats.weekend) {
+    const p = document.createElement('p');
+    p.className = 'stats-empty';
+    p.textContent = 'Nedostatok reálnych dát na priemery.';
+    panel.appendChild(p);
+    return;
+  }
+
+  const row = (label, key) => `
+    <tr>
+      <td>${label}</td>
+      <td>${stats.workday ? stats.workday[key] : '—'}</td>
+      <td>${stats.weekend ? stats.weekend[key] : '—'}</td>
+    </tr>
+  `;
+
+  const table = document.createElement('table');
+  table.className = 'stats-table';
+  table.innerHTML = `
+    <caption>Priemery (bez krátkych denných spánkov)</caption>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Prac. dni${stats.workday ? ` (${stats.workday.count})` : ''}</th>
+        <th>Víkend${stats.weekend ? ` (${stats.weekend.count})` : ''}</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${row('Zaspávanie', 'bed')}
+      ${row('Vstávanie', 'wake')}
+      ${row('Dĺžka spánku', 'duration')}
+    </tbody>
+  `;
+  panel.appendChild(table);
+}
+
 const tooltip = document.getElementById('tooltip');
 
 function showTooltip(evt, night) {
@@ -261,6 +344,10 @@ async function init() {
     renderTable('table-week', data.week.nights);
     renderTable('table-month', data.month.nights);
     renderTable('table-quarter', data.quarter.nights);
+
+    renderStats('stats-week', data.week.nights);
+    renderStats('stats-month', data.month.nights);
+    renderStats('stats-quarter', data.quarter.nights);
   } catch (err) {
     console.error(err);
     subtitle.textContent = '';

@@ -77,9 +77,66 @@ body {
   margin: 0 0 14px;
 }
 
+.chart-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .chart-scroll {
   overflow-x: auto;
   overflow-y: hidden;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.stats-panel {
+  flex: 0 0 auto;
+  width: 260px;
+  max-width: 100%;
+}
+
+.stats-panel table.stats-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12.5px;
+}
+
+.stats-panel table.stats-table caption {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-bottom: 6px;
+  caption-side: top;
+}
+
+.stats-panel table.stats-table th,
+.stats-panel table.stats-table td {
+  text-align: right;
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--gridline);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.stats-panel table.stats-table th:first-child,
+.stats-panel table.stats-table td:first-child {
+  text-align: left;
+  color: var(--text-secondary);
+  font-variant-numeric: normal;
+}
+
+.stats-panel table.stats-table thead th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 11.5px;
+}
+
+.stats-panel .stats-empty {
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-style: italic;
 }
 
 .chart-mount svg {
